@@ -10,5 +10,5 @@ setup(
     license='LICENSE.txt',
     description='Website control for energenie radio control board.',
     long_description=open('README.txt').read(),
-    install_requires=["catstalker >= 0.0.1", "bottle >= 0.12.0"],
+    install_requires=['catstalker >= 0.0.1', 'bottle >= 0.12.0', 'pyxdg >= 0.25'],
 )
