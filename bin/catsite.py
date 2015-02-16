@@ -38,10 +38,10 @@ def turn_off(id=None):
 @post('/rename/<id>/<new_id>')
 def rename(id, new_id):
   switch = switches[id]
-  del(switches[id])
-  switches[new_id] = switch
-
-  save_status()
+  if new_id not in switches and switch:
+    del(switches[id])
+    switches[new_id] = switch
+    save_status()
   return get_status()
 
 @route('/')
@@ -62,8 +62,8 @@ def main():
       pass
 
   if not switches:
-    for idx in range(1, 4):
-      switches[idx] = { 'idx': idx }
+    for idx in range(1, 5):
+      switches[str(idx)] = { 'idx': idx }
 
   print('switches', switches)
 
