@@ -2,6 +2,7 @@
 from bottle import route, get, post, run, template, static_file
 import json
 import xdg.BaseDirectory
+from subprocess import call
 
 # { name: { idx, status } }
 switches = {}
@@ -21,6 +22,13 @@ def turn(status, id):
       switches[id]['status'] = status
   elif id in switches:
     switches[id]['status'] = status
+
+  arg = '-'
+  if status == 'off':
+    arg += 'o'
+  if id is not None:
+    arg += 's' + str(switches[id]['idx'])
+  call(['sudo', 'catstalker.py', arg])
 
   save_status()
   return get_status()

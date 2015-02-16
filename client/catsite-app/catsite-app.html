@@ -3,7 +3,7 @@
     <template repeat="{{switch in switches}}">
       <div class="switch">
         <div class="switch-name">{{switch.name}}</div>
-        <paper-toggle-button on-change={{buttonChange}}></paper-toggle-button>
+        <paper-toggle-button data-switch={{switch.name}} on-change={{buttonChange}}></paper-toggle-button>
         <div class="switch-status">{{switch.status}}</div>
       </div>
     </template>
@@ -31,8 +31,20 @@
   </style>
   <script>
     Polymer({
-      buttonChange: function(e) {
-        console.log("button change", e)
+      buttonChange: function(event, detail, sender) {
+        var name = sender.attributes['data-switch'].value
+        var swtch = _.find(this.switches, 'name', name)
+        var status = swtch.status = sender.checked ? 'on' : 'off'
+
+        var xhr = new XMLHttpRequest
+        xhr.open('POST', '/' + status + '/' + swtch.name)
+        xhr.onload = function(e) {
+          console.log('switched!')
+        }
+        xhr.onerror = function(e) {
+          console.log('failed to switch :(')
+        }
+        xhr.send()
       }
     })
   </script>
