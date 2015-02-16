@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <meta name=viewport
+      content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <script src=components/webcomponentsjs/webcomponents.js></script>
+
+    <link rel=import href=components/font-roboto/roboto.html>
+    <link rel=import href=components/polymer/polymer.html>
+    <link rel=import href=components/core-header-panel/core-header-panel.html>
+    <link rel=import href=components/core-toolbar/core-toolbar.html>
+    <link rel=import href=components/paper-tabs/paper-tabs.html>
+
+    <title>catsite</title>
+    <style>
+      html,body {
+        height: 100%;
+        margin: 0;
+        background-color: #E5E5E5;
+        font-family: 'RobotoDraft', sans-serif;
+      }
+      core-header-panel {
+        height: 100%;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      core-toolbar {
+        background: #aa55bb;
+        color: white;
+      }
+      #tabs {
+        width: 100%;
+        margin: 0;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body unresolved>
+    <core-header-panel>
+      <core-toolbar>
+        <paper-tabs id=tabs selected=status self-end>
+          <paper-tab name=status>Show Current Status</paper-tab>
+          <paper-tab name=calendar>Power Switch Calendar</paper-tab>
+        </paper-tabs>
+      </core-toolbar>
+      <!-- main page content will go here -->
+    </core-header-panel>
+  </body>
+</html>

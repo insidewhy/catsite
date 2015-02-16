@@ -1,33 +1,36 @@
 #!/usr/bin/env python
-from bottle import route, run, template
+from bottle import route, get, run, template, static_file
 
-status = { '1': 'unknown', '2': 'unknown', '3': 'unknown', '4': 'unknown'}
+switches = { '1': 'unknown', '2': 'unknown', '3': 'unknown', '4': 'unknown'}
 
-@route('/status')
+@get('/status')
 def get_status():
-  return status
+  return switches
 
-@route('/on')
-@route('/on/<id>')
+def turn(status, id):
+  if id is None:
+    for id in switches.copy().keys():
+      switches[id] = status
+  elif id in switches:
+    switches[id] = status
+  return get_status()
+
+@get('/on')
+@get('/on/<id>')
 def turn_on(id=None):
-  if id is None:
-    for id in status.copy().keys():
-      status[id] = 'on'
-  elif id in status:
-    status[id] = 'on'
-  return get_status()
+  return turn('on', id)
 
-@route('/off')
-@route('/off/<id>')
+@get('/off')
+@get('/off/<id>')
 def turn_off(id=None):
-  if id is None:
-    for id in status.copy().keys():
-      status[id] = 'on'
-  elif id in status:
-    status[id] = 'off'
-  return get_status()
+  return turn('off', id)
+
+@route('/')
+@route('/<filename:path>')
+def serve_static(filename='index.html'):
+  return static_file(filename, root='client')
 
 def main():
-  run(host='localhost', port=8144)
+  run(host='0.0.0.0', port=8144)
 
 main()
