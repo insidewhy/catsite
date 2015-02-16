@@ -1,36 +1,39 @@
 <polymer-element name="catsite-status" attributes="switches">
+  <template>
+    <template repeat="{{switch in switches}}">
+      <div class="switch">
+        <div class="switch-name">{{switch.name}}</div>
+        <paper-toggle-button on-change={{buttonChange}}></paper-toggle-button>
+        <div class="switch-status">{{switch.status}}</div>
+      </div>
+    </template>
+  </template>
   <style shim-shadowdom>
-    catsite-status::shadow .switch {
+    catsite-app /deep/ .switch {
       clear: left;
       height: 35px;
       line-height: 35px;
     }
-    catsite-status::shadow .switch-name {
+    catsite-app /deep/ .switch-name {
       width: 6em;
       float: left;
     }
-    catsite-status::shadow .switch-status {
+    catsite-app /deep/ .switch-status {
       float: left;
       margin-left: 10px;
       font-size: 80%;
       color: #aaaaaa;
     }
-    catsite-status::shadow paper-toggle-button {
+    catsite-app /deep/ paper-toggle-button {
       float: left;
       margin-top: 11px;
     }
   </style>
-  <template>
-    <template repeat="{{switch in switches}}">
-      <div class="switch">
-        <div class="switch-name">{{switch.name}}</div>
-        <paper-toggle-button></paper-toggle-button>
-        <div class="switch-status">{{switch.status}}</div>
-      </div>
-    </template>
-  </template>
   <script>
     Polymer({
+      buttonChange: function(e) {
+        console.log("button change", e)
+      }
     })
   </script>
 </polymer-element>
