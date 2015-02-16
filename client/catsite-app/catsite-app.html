@@ -1,33 +1,23 @@
 <polymer-element name="catsite-status" attributes="switches">
   <style shim-shadowdom>
-    html,body {
-      height: 100%;
-      margin: 0;
-      font-family: 'RobotoDraft', sans-serif;
+    ::shadow .switch {
+      clear: left;
+      height: 35px;
+      line-height: 35px;
     }
-    ::shadow core-header-panel {
-      height: 100%;
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
+    ::shadow .switch-name {
+      width: 6em;
+      float: left;
     }
-    ::shadow core-toolbar {
-      background: #aa55bb;
-      color: white;
-    }
-    ::shadow #tabs {
-      width: 100%;
-      margin: 0;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      text-transform: uppercase;
+    ::shadow paper-toggle-button {
+      margin-top: 10px;
     }
   </style>
   <template>
     <template repeat="{{switch in switches}}">
-      <div>
-        Switch {{switch.name}} = {{switch.status}}
+      <div class="switch clearfix">
+        <div class="switch-name">{{switch.name}}</div>
+        <paper-toggle-button/>
       </div>
     </template>
   </template>
@@ -55,6 +45,35 @@
       <!-- main page content will go here -->
     </core-header-panel>
   </template>
+  <style shim-shadowdom>
+    html,body {
+      height: 100%;
+      margin: 0;
+      font-family: 'RobotoDraft', sans-serif;
+    }
+    ::shadow core-header-panel {
+      height: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    ::shadow core-toolbar {
+      margin-top: 0px;
+      background: #aa55bb;
+      color: white;
+    }
+    ::shadow #tabs {
+      width: 100%;
+      margin: 0;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      text-transform: uppercase;
+    }
+    ::shadow core-pages {
+      margin: 20px 40px;
+    }
+  </style>
   <script>
     Polymer({
       selected: 'status',
