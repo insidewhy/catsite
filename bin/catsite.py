@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from bottle import route, get, run, template, static_file
+from bottle import route, get, post, run, template, static_file
 import json
 import xdg.BaseDirectory
 
@@ -25,17 +25,17 @@ def turn(status, id):
   save_status()
   return get_status()
 
-@get('/on')
-@get('/on/<id>')
+@post('/on')
+@post('/on/<id>')
 def turn_on(id=None):
   return turn('on', id)
 
-@get('/off')
-@get('/off/<id>')
+@post('/off')
+@post('/off/<id>')
 def turn_off(id=None):
   return turn('off', id)
 
-@get('/rename/<id>/<new_id>')
+@post('/rename/<id>/<new_id>')
 def rename(id, new_id):
   switch = switches[id]
   del(switches[id])
@@ -52,10 +52,9 @@ def serve_static(filename='index.html'):
 def main():
   global switches
 
-  # load most specific data path
-  path = None
+  # restore switch state from fs
   for path in xdg.BaseDirectory.load_data_paths('catsite'):
-    print('loading ' + path)
+    print('loading', path)
     try:
       with open(path + '/switches', 'r') as infile:
         switches = json.load(infile)
