@@ -9,15 +9,23 @@
       width: 6em;
       float: left;
     }
+    ::shadow .switch-status {
+      float: left;
+      margin-left: 10px;
+      font-size: 80%;
+      color: #aaaaaa;
+    }
     ::shadow paper-toggle-button {
-      margin-top: 10px;
+      float: left;
+      margin-top: 11px;
     }
   </style>
   <template>
     <template repeat="{{switch in switches}}">
       <div class="switch clearfix">
         <div class="switch-name">{{switch.name}}</div>
-        <paper-toggle-button/>
+        <paper-toggle-button></paper-toggle-button>
+        <div class="switch-status">{{switch.status}}</div>
       </div>
     </template>
   </template>
