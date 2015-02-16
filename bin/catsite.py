@@ -7,27 +7,23 @@ status = { '1': 'unknown', '2': 'unknown', '3': 'unknown', '4': 'unknown'}
 def get_status():
   return status
 
-@route('/on/<id>')
-def turn_on(id):
-  if id in status:
-    status[id] = 'on'
-  return get_status()
-
-@route('/off/<id>')
-def turn_off(id):
-  if id in status:
-    status[id] = 'off'
-  return get_status()
-
 @route('/on')
-def turn_all_on():
-  for id in status.copy().keys():
+@route('/on/<id>')
+def turn_on(id=None):
+  if id is None:
+    for id in status.copy().keys():
+      status[id] = 'on'
+  elif id in status:
     status[id] = 'on'
   return get_status()
 
 @route('/off')
-def turn_all_off():
-  for id in status.copy().keys():
+@route('/off/<id>')
+def turn_off(id=None):
+  if id is None:
+    for id in status.copy().keys():
+      status[id] = 'on'
+  elif id in status:
     status[id] = 'off'
   return get_status()
 
