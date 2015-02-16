@@ -1,28 +1,28 @@
 <polymer-element name="catsite-status" attributes="switches">
   <style shim-shadowdom>
-    ::shadow .switch {
+    catsite-status::shadow .switch {
       clear: left;
       height: 35px;
       line-height: 35px;
     }
-    ::shadow .switch-name {
+    catsite-status::shadow .switch-name {
       width: 6em;
       float: left;
     }
-    ::shadow .switch-status {
+    catsite-status::shadow .switch-status {
       float: left;
       margin-left: 10px;
       font-size: 80%;
       color: #aaaaaa;
     }
-    ::shadow paper-toggle-button {
+    catsite-status::shadow paper-toggle-button {
       float: left;
       margin-top: 11px;
     }
   </style>
   <template>
     <template repeat="{{switch in switches}}">
-      <div class="switch clearfix">
+      <div class="switch">
         <div class="switch-name">{{switch.name}}</div>
         <paper-toggle-button></paper-toggle-button>
         <div class="switch-status">{{switch.status}}</div>
@@ -59,17 +59,17 @@
       margin: 0;
       font-family: 'RobotoDraft', sans-serif;
     }
-    ::shadow core-header-panel {
+    catsite-app::shadow core-header-panel {
       height: 100%;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
     }
-    ::shadow core-toolbar {
+    catsite-app::shadow core-toolbar {
       margin-top: 0px;
       background: #aa55bb;
       color: white;
     }
-    ::shadow #tabs {
+    catsite-app::shadow #tabs {
       width: 100%;
       margin: 0;
       -webkit-user-select: none;
@@ -78,7 +78,7 @@
       user-select: none;
       text-transform: uppercase;
     }
-    ::shadow core-pages {
+    catsite-app::shadow core-pages {
       margin: 20px 40px;
     }
   </style>
