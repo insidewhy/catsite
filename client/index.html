@@ -9,6 +9,7 @@
     <link rel=import href=components/core-header-panel/core-header-panel.html>
     <link rel=import href=components/core-toolbar/core-toolbar.html>
     <link rel=import href=components/core-pages/core-pages.html>
+    <link rel=import href=components/core-ajax/core-ajax.html>
     <link rel=import href=components/paper-tabs/paper-tabs.html>
 
     <title>catsite</title>
@@ -38,29 +39,56 @@
         text-transform: uppercase;
       }
     </style>
+
+    <script src=components/lodash/lodash.min.js></script>
   </head>
   <body unresolved>
-    <polymer-element name="catsite-tabs">
+    <polymer-element name="catsite-status" attributes="switches">
       <template>
+        <template repeat="{{switch in switches}}">
+          <div>
+            Switch {{switch.name}} = {{switch.status}}
+          </div>
+        </template>
+      </template>
+      <script>
+        Polymer({
+        })
+      </script>
+    </polymer-element>
+
+    <polymer-element name="catsite-app">
+      <template>
+        <core-ajax auto url=/status handleAs=json on-core-response="{{onStatus}}"></core-ajax>
         <core-header-panel>
           <core-toolbar>
             <paper-tabs id=tabs selected="{{selected}}" self-end>
-              <paper-tab name=status>Show Current Status</paper-tab>
+              <paper-tab name=status>Current Status</paper-tab>
               <paper-tab name=calendar>Power Switch Calendar</paper-tab>
             </paper-tabs>
           </core-toolbar>
           <core-pages selected="{{selected}}">
-            <div name=status>Status page</div>
+            <catsite-status name=status switches="{{switches}}">
+            </catsite-status>
             <div name=calendar>Calendar page</div>
           </core-pages>
           <!-- main page content will go here -->
         </core-header-panel>
       </template>
       <script>
-        Polymer({ selected: 'status' })
+        Polymer({
+          selected: 'status',
+          switches: {},
+          onStatus: function(e) {
+            this.switches = _.sortBy(_.map(e.detail.response, function(val, key) {
+              val.name = key
+              return val
+            }), 'idx')
+          }
+        })
       </script>
     </polymer-element>
 
-    <catsite-tabs/>
+    <catsite-app></catsite-app>
   </body>
 </html>
