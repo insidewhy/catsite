@@ -3,7 +3,11 @@
     <template repeat="{{switch in switches}}">
       <div class="switch">
         <div class="switch-name">{{switch.name}}</div>
-        <paper-toggle-button data-switch={{switch.name}} on-change={{buttonChange}}></paper-toggle-button>
+        <paper-toggle-button
+          data-switch={{switch.name}}
+          on-change={{buttonChange}}
+          checked="[[switch.status === 'on']]"
+        ></paper-toggle-button>
         <div class="switch-status">{{switch.status}}</div>
       </div>
     </template>
