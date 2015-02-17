@@ -1,1 +1,2 @@
+v0.0.2, Tue 17 Feb 00:54:40 GMT 2015 -- Can control switches and view their state.
 v0.0.1, Mon Feb 16 01:06:29 UTC 2015 -- Initial release.
