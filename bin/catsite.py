@@ -1,11 +1,20 @@
 #!/usr/bin/env python
-from bottle import route, get, post, run, template, static_file
-import json
+from bottle import route, get, post, run, template, static_file, response
 import xdg.BaseDirectory
 from subprocess import call
+import picamera
+from io import BytesIO
+import json
+from threading import Thread, BoundedSemaphore
+from time import sleep
 
-# { name: { idx, status } }
-switches = {}
+PICTURE_INTERVAL = 60 # in seconds
+
+switches = {} # { name: { idx, status } }
+
+pic_lock = BoundedSemaphore()
+pic_thread = None
+pic_data = None
 
 def save_status():
   path = xdg.BaseDirectory.save_data_path('catsite')
@@ -57,6 +66,33 @@ def rename(id, new_id):
 def serve_static(filename='index.html'):
   return static_file(filename, root='client')
 
+@route('/camera')
+def camera():
+  response.content_type = 'image/jpeg'
+  with pic_lock:
+    return pic_data
+
+def take_pictures():
+  global pic_data
+
+  while True:
+    with picamera.PiCamera() as camera:
+      stream = BytesIO()
+      camera.start_preview()
+      sleep(2)
+      camera.capture(stream, 'jpeg')
+      with pic_lock:
+        pic_data = stream.getvalue()
+    sleep(PICTURE_INTERVAL)
+
+def start_picture_thread():
+  global pic_thread
+  with pic_lock:
+    if not pic_thread:
+      pic_thread = Thread(target=take_pictures)
+      pic_thread.daemon = True
+      pic_thread.start()
+
 def main():
   global switches
 
@@ -78,6 +114,7 @@ def main():
   for switch in switches.values():
     switch['status'] = 'unknown'
 
+  start_picture_thread()
   run(host='0.0.0.0', port=8144)
 
 main()

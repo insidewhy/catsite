@@ -11,6 +11,7 @@
         <div class="switch-status">{{switch.status}}</div>
       </div>
     </template>
+    <img src=/camera />
   </template>
   <style shim-shadowdom>
     catsite-app /deep/ .switch {
@@ -31,6 +32,9 @@
     catsite-app /deep/ paper-toggle-button {
       float: left;
       margin-top: 11px;
+    }
+    catsite-app::shadow catsite-status::shadow >img {
+      margin-top: 20px;
     }
   </style>
   <script>
