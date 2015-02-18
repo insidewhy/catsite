@@ -28,4 +28,4 @@ optional arguments:
   -p PORT, --port PORT  port to run on
 ```
 
-The default port is 8144.
+The default port is 8144. You must create a user called "catsite" to run this so that sudo will allow the user access to the GPIO pins (the pip package installs a file to /etc/sudoers.d).

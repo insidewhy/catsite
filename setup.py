@@ -2,10 +2,11 @@ from distutils.core import setup
 
 setup(
     name='catsite',
-    version='0.0.3',
+    version='0.0.4',
     author='J. Pike',
     author_email='pip@chilon.net',
     scripts=['bin/catsite.py'],
+    data_files=[('etc/sudoers.d', ['sudoers.d/catsite'])],
     url='http://github.com/nuisanceofcats/catsite',
     license='LICENSE.txt',
     description='Website control for energenie radio control board.',
