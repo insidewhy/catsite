@@ -5,12 +5,14 @@ from subprocess import call
 import picamera
 from io import BytesIO
 import json
+import argparse
 from threading import Thread, BoundedSemaphore
 from time import sleep
 
 PICTURE_INTERVAL = 60 # in seconds
 
 switches = {} # { name: { idx, status } }
+opts = None
 
 pic_lock = BoundedSemaphore()
 pic_thread = None
@@ -77,6 +79,7 @@ def take_pictures():
 
   while True:
     with picamera.PiCamera() as camera:
+      camera.vflip = opts.vertical_flip
       stream = BytesIO()
       camera.start_preview()
       sleep(2)
@@ -94,7 +97,13 @@ def start_picture_thread():
       pic_thread.start()
 
 def main():
-  global switches
+  global switches, opts
+
+  parser = argparse.ArgumentParser(
+    description='control raspberry pi home security/deterrence system')
+  parser.add_argument('-v', '--vertical-flip', action='store_true',
+    help='flip camera image vertically')
+  opts = parser.parse_args()
 
   # restore switch state from fs
   for path in xdg.BaseDirectory.load_data_paths('catsite'):
