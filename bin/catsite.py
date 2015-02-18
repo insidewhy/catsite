@@ -8,6 +8,7 @@ import json
 import argparse
 from threading import Thread, BoundedSemaphore
 from time import sleep
+from datetime import datetime, timedelta
 
 PICTURE_INTERVAL = 60 # in seconds
 
@@ -16,6 +17,7 @@ switches = {} # { name: { idx, status } }
 opts = None
 
 pic_lock = BoundedSemaphore()
+pic_expires = None
 pic_requests = 0 # requests for images since last picture
 pic_thread = None
 pic_data = None
@@ -77,10 +79,11 @@ def camera():
   while not pic_data:
     sleep(1)
   with pic_lock:
+    response.expires = pic_expires
     return pic_data
 
 def take_pictures():
-  global pic_data, pic_thread, pic_requests
+  global pic_data, pic_thread, pic_requests, pic_expires
 
   while True:
     with picamera.PiCamera() as camera:
@@ -93,6 +96,7 @@ def take_pictures():
       with pic_lock:
         pic_requests = 0
         pic_data = stream.getvalue()
+        pic_expires = datetime.now() + timedelta(0, PICTURE_INTERVAL)
 
     sleep(PICTURE_INTERVAL)
     with pic_lock:
