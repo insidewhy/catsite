@@ -120,6 +120,8 @@ def main():
     help='flip camera image vertically')
   parser.add_argument('-H', '--horizontal-flip', action='store_true',
     help='flip camera image horizontally')
+  parser.add_argument('-p', '--port', type=int, default=8144,
+    help='port to run on')
   opts = parser.parse_args()
 
   # restore switch state from fs
@@ -140,6 +142,6 @@ def main():
   for switch in switches.values():
     switch['status'] = 'unknown'
 
-  run(host='0.0.0.0', port=8144)
+  run(host='0.0.0.0', port=opts.port)
 
 main()
