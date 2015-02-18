@@ -80,6 +80,7 @@ def take_pictures():
   while True:
     with picamera.PiCamera() as camera:
       camera.vflip = opts.vertical_flip
+      camera.hflip = opts.horizontal_flip
       stream = BytesIO()
       camera.start_preview()
       sleep(2)
@@ -100,9 +101,11 @@ def main():
   global switches, opts
 
   parser = argparse.ArgumentParser(
-    description='control raspberry pi home security/deterrence system')
+    description='raspberry pi home security/deterrence system')
   parser.add_argument('-v', '--vertical-flip', action='store_true',
     help='flip camera image vertically')
+  parser.add_argument('-H', '--horizontal-flip', action='store_true',
+    help='flip camera image horizontally')
   opts = parser.parse_args()
 
   # restore switch state from fs
