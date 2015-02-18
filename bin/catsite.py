@@ -71,7 +71,7 @@ def main():
 
   if not switches:
     for idx in range(1, 5):
-      switches[str(idx)] = { 'idx': idx }
+      switches['switch ' + str(idx)] = { 'idx': idx }
 
   print('switches', switches)
 
