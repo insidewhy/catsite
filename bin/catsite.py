@@ -10,7 +10,7 @@ from threading import Thread, BoundedSemaphore
 from time import sleep
 from datetime import datetime, timedelta
 
-PICTURE_INTERVAL = 60 # in seconds
+PICTURE_INTERVAL = 30 # in seconds
 
 # TODO: use classes instead of globals
 switches = {} # { name: { idx, status } }
@@ -96,7 +96,7 @@ def take_pictures():
       with pic_lock:
         pic_requests = 0
         pic_data = stream.getvalue()
-        pic_expires = datetime.now() + timedelta(0, PICTURE_INTERVAL)
+        pic_expires = datetime.now() + timedelta(0, PICTURE_INTERVAL + 5)
 
     sleep(PICTURE_INTERVAL)
     with pic_lock:

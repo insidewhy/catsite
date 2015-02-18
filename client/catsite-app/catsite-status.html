@@ -1,3 +1,5 @@
+<link rel=import href=updating-img.html>
+
 <polymer-element name="catsite-status" attributes="switches">
   <template>
     <template repeat="{{switch in switches}}">
@@ -11,7 +13,7 @@
         <div class="switch-status">{{switch.status}}</div>
       </div>
     </template>
-    <img src=/camera />
+    <updating-img src=/camera />
   </template>
   <style shim-shadowdom>
     catsite-app::shadow catsite-status::shadow .switch {

@@ -1,0 +1,33 @@
+<polymer-element name="updating-img" attributes="src">
+  <template>
+    <img id=img />
+  </template>
+  <script>
+    Polymer({
+      ready: function() {
+        this.request()
+      },
+      request: function() {
+        console.log('getting image')
+        var img = this.$.img
+        var next = this.request.bind(this)
+
+        var xhr = new XMLHttpRequest
+        xhr.responseType = 'blob'
+        xhr.open('GET', '/camera')
+        xhr.onload = function() {
+          var expires = new Date(xhr.getResponseHeader('Expires'))
+          img.src = window.URL.createObjectURL(xhr.response)
+          var nextRequestTime = expires.getTime() - Date.now()
+          console.log('got image!!', expires, new Date, nextRequestTime)
+          setTimeout(next, Math.max(nextRequestTime, 1000))
+        }
+        xhr.onerror = function() {
+          console.log('failed to get image :(')
+          setTimeout(next, 10000)
+        }
+        xhr.send()
+      }
+    })
+  </script>
+</polymer-element>
