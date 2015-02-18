@@ -11,10 +11,12 @@ from time import sleep
 
 PICTURE_INTERVAL = 60 # in seconds
 
+# TODO: use classes instead of globals
 switches = {} # { name: { idx, status } }
 opts = None
 
 pic_lock = BoundedSemaphore()
+pic_requests = 0 # requests for images since last picture
 pic_thread = None
 pic_data = None
 
@@ -70,12 +72,15 @@ def serve_static(filename='index.html'):
 
 @route('/camera')
 def camera():
+  start_picture_thread()
   response.content_type = 'image/jpeg'
+  while not pic_data:
+    sleep(1)
   with pic_lock:
     return pic_data
 
 def take_pictures():
-  global pic_data
+  global pic_data, pic_thread, pic_requests
 
   while True:
     with picamera.PiCamera() as camera:
@@ -86,13 +91,22 @@ def take_pictures():
       sleep(2)
       camera.capture(stream, 'jpeg')
       with pic_lock:
+        pic_requests = 0
         pic_data = stream.getvalue()
+
     sleep(PICTURE_INTERVAL)
+    with pic_lock:
+      if pic_requests == 0:
+        pic_thread = None
+        break
 
 def start_picture_thread():
-  global pic_thread
+  global pic_thread, pic_requests
   with pic_lock:
-    if not pic_thread:
+    if pic_thread:
+      pic_requests += 1
+    else:
+      pic_requests = 1
       pic_thread = Thread(target=take_pictures)
       pic_thread.daemon = True
       pic_thread.start()
@@ -126,7 +140,6 @@ def main():
   for switch in switches.values():
     switch['status'] = 'unknown'
 
-  start_picture_thread()
   run(host='0.0.0.0', port=8144)
 
 main()
