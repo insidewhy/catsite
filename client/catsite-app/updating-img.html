@@ -1,7 +1,16 @@
 <polymer-element name="updating-img" attributes="src">
   <template>
+    <div id=progress></div>
     <img id=img />
   </template>
+  <style shim-shadowdom>
+    catsite-app::shadow /deep/ #progress {
+      width: 0%;
+      height: 3px;
+      background-color: red;
+      transition: width linear;
+    }
+  </style>
   <script>
     Polymer({
       ready: function() {
@@ -10,7 +19,11 @@
       request: function() {
         console.log('getting image', new Date)
         var img = this.$.img
+        var progress = this.$.progress
         var next = this.request.bind(this)
+
+        progress.style.transitionDuration = '0s'
+        progress.style.width = '0%'
 
         var xhr = new XMLHttpRequest
         xhr.open('GET', '/camera')
@@ -25,6 +38,10 @@
           var expires = new Date(xhr.getResponseHeader('Expires'))
           img.src = window.URL.createObjectURL(xhr.response)
           var nextRequestTime = expires.getTime() - Date.now()
+
+          progress.style.transitionDuration = (nextRequestTime / 1000) + 's'
+          progress.style.width = '100%'
+
           setTimeout(next, Math.max(nextRequestTime, 1000))
         }
         xhr.onerror = function() {
