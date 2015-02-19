@@ -79,8 +79,9 @@ def camera():
 
   if not pic_data:
     # client will re-request
-    abort("no pic yet")
+    abort(503, 'no pic yet')
 
+  response.set_header('Cache-Control', 'private, max-age=0, no-cache')
   response.content_type = 'image/jpeg'
   with pic_lock:
     response.expires = pic_expires
