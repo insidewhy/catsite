@@ -13,8 +13,8 @@
         var next = this.request.bind(this)
 
         var xhr = new XMLHttpRequest
-        xhr.responseType = 'blob'
         xhr.open('GET', '/camera')
+        xhr.responseType = 'blob'
         xhr.onload = function() {
           var expires = new Date(xhr.getResponseHeader('Expires'))
           img.src = window.URL.createObjectURL(xhr.response)
