@@ -29,6 +29,7 @@ def save_status():
 
 @get('/status')
 def get_status():
+  response.set_header('Cache-Control', 'private, max-age=0, no-cache')
   return switches
 
 def turn(status, id):
