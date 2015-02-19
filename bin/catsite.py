@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from bottle import route, get, post, run, template, static_file, response
+from bottle import route, get, post, run, template, static_file, response, abort
 import xdg.BaseDirectory
 from subprocess import call
 import picamera
@@ -76,9 +76,12 @@ def serve_static(filename='index.html'):
 @route('/camera')
 def camera():
   start_picture_thread()
+
+  if not pic_data:
+    # client will re-request
+    abort("no pic yet")
+
   response.content_type = 'image/jpeg'
-  while not pic_data:
-    sleep(1)
   with pic_lock:
     response.expires = pic_expires
     return pic_data
@@ -102,6 +105,7 @@ def take_pictures():
     sleep(PICTURE_INTERVAL)
     with pic_lock:
       if pic_requests == 0:
+        pic_data = None
         pic_thread = None
         break
 

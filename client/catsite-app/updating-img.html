@@ -8,7 +8,7 @@
         this.request()
       },
       request: function() {
-        console.log('getting image')
+        console.log('getting image', new Date)
         var img = this.$.img
         var next = this.request.bind(this)
 
@@ -16,15 +16,20 @@
         xhr.open('GET', '/camera')
         xhr.responseType = 'blob'
         xhr.onload = function() {
+          if (xhr.status !== 200) {
+            console.log('failed to get image :(', xhr.status)
+            setTimeout(next, 1000)
+            return
+          }
+
           var expires = new Date(xhr.getResponseHeader('Expires'))
           img.src = window.URL.createObjectURL(xhr.response)
           var nextRequestTime = expires.getTime() - Date.now()
-          console.log('got image!!', expires, new Date, nextRequestTime)
           setTimeout(next, Math.max(nextRequestTime, 1000))
         }
         xhr.onerror = function() {
-          console.log('failed to get image :(')
-          setTimeout(next, 10000)
+          console.log('xhr error :(')
+          setTimeout(next, 5000)
         }
         xhr.send()
       }
