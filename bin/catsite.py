@@ -1,26 +1,18 @@
 #!/usr/bin/env python
+
+import sys
+sys.path.append('.') # to find libcatsite during testing
+
+import libcatsite.camera
 from bottle import route, get, post, run, template, static_file, response, abort
 import xdg.BaseDirectory
 from subprocess import call
-import picamera
-from io import BytesIO
 import json
 import argparse
-from threading import Thread, BoundedSemaphore
-from time import sleep
-from datetime import datetime, timedelta
-
-PICTURE_INTERVAL = 30 # in seconds
 
 # TODO: use classes instead of globals
 switches = {} # { name: { idx, status } }
 opts = None
-
-pic_lock = BoundedSemaphore()
-pic_expires = None
-pic_requests = 0 # requests for images since last picture
-pic_thread = None
-pic_data = None
 
 def save_status():
   path = xdg.BaseDirectory.save_data_path('catsite')
@@ -75,51 +67,15 @@ def serve_static(filename='index.html'):
 
 @route('/camera')
 def camera():
-  start_picture_thread()
-
-  if not pic_data:
+  [img, expires] = libcatsite.camera.take_picture()
+  if not img:
     # client will re-request
     abort(503, 'no pic yet')
 
   response.set_header('Cache-Control', 'private, max-age=0, no-cache')
   response.content_type = 'image/jpeg'
-  with pic_lock:
-    response.expires = pic_expires
-    return pic_data
-
-def take_pictures():
-  global pic_data, pic_thread, pic_requests, pic_expires
-
-  while True:
-    with picamera.PiCamera() as camera:
-      camera.vflip = opts.vertical_flip
-      camera.hflip = opts.horizontal_flip
-      stream = BytesIO()
-      camera.start_preview()
-      sleep(2)
-      camera.capture(stream, 'jpeg')
-      with pic_lock:
-        pic_requests = 0
-        pic_data = stream.getvalue()
-        pic_expires = datetime.now() + timedelta(0, PICTURE_INTERVAL + 5)
-
-    sleep(PICTURE_INTERVAL)
-    with pic_lock:
-      if pic_requests == 0:
-        pic_data = None
-        pic_thread = None
-        break
-
-def start_picture_thread():
-  global pic_thread, pic_requests
-  with pic_lock:
-    if pic_thread:
-      pic_requests += 1
-    else:
-      pic_requests = 1
-      pic_thread = Thread(target=take_pictures)
-      pic_thread.daemon = True
-      pic_thread.start()
+  response.expires = expires
+  return img
 
 def main():
   global switches, opts
@@ -133,6 +89,7 @@ def main():
   parser.add_argument('-p', '--port', type=int, default=8144,
     help='port to run on')
   opts = parser.parse_args()
+  libcatsite.camera.init(opts)
 
   # restore switch state from fs
   for path in xdg.BaseDirectory.load_data_paths('catsite'):

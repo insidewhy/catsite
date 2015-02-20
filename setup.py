@@ -6,6 +6,7 @@ setup(
     author='J. Pike',
     author_email='pip@chilon.net',
     scripts=['bin/catsite.py'],
+    packages=['libcatsite'],
     data_files=[('etc/sudoers.d', ['sudoers.d/catsite'])],
     url='http://github.com/nuisanceofcats/catsite',
     license='LICENSE.txt',
