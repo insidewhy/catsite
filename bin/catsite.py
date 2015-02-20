@@ -82,6 +82,8 @@ def main():
 
   parser = argparse.ArgumentParser(
     description='raspberry pi home security/deterrence system')
+  parser.add_argument('-i', '--pic-interval', type=int, default=30,
+    help='time between camera images')
   parser.add_argument('-v', '--vertical-flip', action='store_true',
     help='flip camera image vertically')
   parser.add_argument('-H', '--horizontal-flip', action='store_true',

@@ -4,8 +4,6 @@ from threading import Thread, BoundedSemaphore
 from time import sleep
 from datetime import datetime, timedelta
 
-PICTURE_INTERVAL = 30 # in seconds
-
 pic_lock = BoundedSemaphore()
 pic_expires = None
 pic_requests = 0 # requests for images since last picture
@@ -14,11 +12,13 @@ pic_data = None
 
 # options
 vertical_flip = horizontal_flip = False
+pic_interval = 30 # in seconds
 
 def init(_opts):
-  global vertical_flip, horizontal_flip
+  global vertical_flip, horizontal_flip, pic_interval
   vertical_flip = _opts.vertical_flip
   horizontal_flip = _opts.horizontal_flip
+  pic_interval = _opts.pic_interval
 
 def take_picture():
   _start_picture_thread()
@@ -39,9 +39,9 @@ def _take_pictures():
       with pic_lock:
         pic_requests = 0
         pic_data = stream.getvalue()
-        pic_expires = datetime.now() + timedelta(0, PICTURE_INTERVAL + 5)
+        pic_expires = datetime.now() + timedelta(0, pic_interval + 5)
 
-    sleep(PICTURE_INTERVAL)
+    sleep(pic_interval)
     with pic_lock:
       if pic_requests == 0:
         pic_data = None
