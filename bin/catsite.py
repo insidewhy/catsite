@@ -9,6 +9,7 @@ import xdg.BaseDirectory
 from subprocess import call
 import json
 import argparse
+import os.path
 
 # TODO: use classes instead of globals
 switches = {} # { name: { idx, status } }
@@ -63,7 +64,7 @@ def rename(id, new_id):
 @route('/')
 @route('/<filename:path>')
 def serve_static(filename='index.html'):
-  return static_file(filename, root='client')
+  return static_file(filename, root=opts.root + '/client')
 
 @route('/camera')
 def camera():
@@ -90,8 +91,15 @@ def main():
     help='flip camera image horizontally')
   parser.add_argument('-p', '--port', type=int, default=8144,
     help='port to run on')
+  parser.add_argument('-r', '--root', help='directory containing client files')
   opts = parser.parse_args()
   libcatsite.camera.init(opts)
+
+  if opts.root is None:
+    if os.path.isdir('client/catsite-app'):
+      opts.root = '.'
+    else:
+      opts.root = '/usr/share/catsite'
 
   # restore switch state from fs
   for path in xdg.BaseDirectory.load_data_paths('catsite'):
