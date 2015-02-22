@@ -15,11 +15,11 @@ def recursive_include(prefix, dir):
     ret += [(prefix, files)]
   return ret
 
-share_files = recursive_include('usr/share/catsite/client', 'client')
+share_files = recursive_include('share/catsite/client', 'client')
 
 setup(
     name='catsite',
-    version='0.0.5',
+    version='0.0.6',
     author='J. Pike',
     author_email='pip@chilon.net',
     scripts=['bin/catsite.py'],
